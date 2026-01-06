@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Calorie Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Health Calorie Tracker</h1>
+            <p>Calculate your daily calorie needs to reach your target weight</p>
+        </header>
+
+        <form id="healthForm">
+            <div class="form-section">
+                <h2>Personal Information</h2>
+                
+                <div class="form-group">
+                    <label for="age">Age (years)</label>
+                    <input type="number" id="age" name="age" min="1" max="120" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="gender" value="male" required>
+                            Male
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="gender" value="female" required>
+                            Female
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="heightUnit">Height Unit</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="heightUnit" value="cm" checked required>
+                            cm
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="heightUnit" value="ft" required>
+                            ft & in
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="heightCmGroup">
+                    <label for="height">Height (cm)</label>
+                    <input type="number" id="height" name="height" min="50" max="250" step="0.1" required>
+                </div>
+
+                <div class="form-group hidden" id="heightFtGroup">
+                    <div class="height-ft-inputs">
+                        <div>
+                            <label for="heightFeet">Feet</label>
+                            <input type="number" id="heightFeet" name="heightFeet" min="2" max="8" step="1">
+                        </div>
+                        <div>
+                            <label for="heightInches">Inches</label>
+                            <input type="number" id="heightInches" name="heightInches" min="0" max="11" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="weightUnit">Weight Unit</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="weightUnit" value="kg" checked required>
+                            kg
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="weightUnit" value="lb" required>
+                            lb
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentWeight">Current Weight</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="currentWeight" name="currentWeight" min="20" max="300" step="0.1" required>
+                        <span class="unit-display" id="currentWeightUnit">kg</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="targetWeight">Target Weight</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="targetWeight" name="targetWeight" min="20" max="300" step="0.1" required>
+                        <span class="unit-display" id="targetWeightUnit">kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Exercise Information</h2>
+                
+                <div class="form-group">
+                    <label for="exerciseFrequency">Exercise Frequency</label>
+                    <select id="exerciseFrequency" name="exerciseFrequency" required>
+                        <option value="">Select frequency</option>
+                        <option value="none">None</option>
+                        <option value="twice">Twice a week</option>
+                        <option value="3-5">3-5 times a week</option>
+                        <option value="7">7 days</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="exerciseTime">Exercise Time</label>
+                    <select id="exerciseTime" name="exerciseTime" required>
+                        <option value="">Select duration</option>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="60">1 hour</option>
+                        <option value="90">More than 1 hour</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Exercise Type (select all that apply)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="exerciseType" value="home">
+                            Home workout
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="exerciseType" value="gym">
+                            Gym workout
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="exerciseType" value="yoga">
+                            Yoga
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="exerciseType" value="walking">
+                            Walking
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Calculate Calories</button>
+                <button type="button" class="btn-secondary" id="clearBtn">Clear Form</button>
+            </div>
+        </form>
+
+        <div id="results" class="results hidden">
+            <h2>Your Daily Calorie Requirements</h2>
+            <div class="result-card">
+                <div class="result-item">
+                    <span class="result-label">Daily Calories Needed:</span>
+                    <span class="result-value" id="dailyCalories">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Weekly Weight Change:</span>
+                    <span class="result-value" id="weeklyChange">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Estimated Time to Goal:</span>
+                    <span class="result-value" id="timeToGoal">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Basal Metabolic Rate (BMR):</span>
+                    <span class="result-value" id="bmr">-</span>
+                </div>
+            </div>
+            <div class="chart-section">
+                <h3>Weight Progress Timeline</h3>
+                <div class="chart-container">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="nutrition-toggle">
+                <button type="button" class="btn-nutrition" id="nutritionBtn">View Nutrition Details</button>
+            </div>
+            
+            <div class="download-section">
+                <button type="button" class="btn-download" id="downloadBtn">Download PDF Report</button>
+            </div>
+            <div id="nutritionDetails" class="nutrition-details hidden">
+                <h3>Daily Nutrition Requirements</h3>
+                <div class="nutrition-grid">
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Protein:</span>
+                        <span class="nutrition-value" id="protein">-</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Carbohydrates:</span>
+                        <span class="nutrition-value" id="carbs">-</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Fats:</span>
+                        <span class="nutrition-value" id="fats">-</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Fiber:</span>
+                        <span class="nutrition-value" id="fiber">-</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Water:</span>
+                        <span class="nutrition-value" id="water">-</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-label">Sodium:</span>
+                        <span class="nutrition-value" id="sodium">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+

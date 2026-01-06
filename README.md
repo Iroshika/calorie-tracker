@@ -14,7 +14,7 @@ A comprehensive web application to calculate your daily calorie requirements bas
 
 ## Live Demo
 
-🌐 [View Live Website](https://YOUR_USERNAME.github.io/health-calorie-tracker)
+🌐 [View Live Website](https://iroshika.github.io/calorie-tracker)
 
 ## Technologies Used
 
